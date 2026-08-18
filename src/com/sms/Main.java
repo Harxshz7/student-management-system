@@ -16,16 +16,20 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
 
-        System.out.println("Loaded " + studentService.getAllStudents().size() + " student(s) from students.json");
+        System.out.println("Loaded " + studentService.getTotalCount() + " student(s) from students.json");
 
         while (running) {
             System.out.println("\n=== Student Management System ===");
-            System.out.println("1. Add Student");
-            System.out.println("2. View All Students");
-            System.out.println("3. Search Students");
-            System.out.println("4. Update Student");
-            System.out.println("5. Delete Student");
-            System.out.println("6. Exit");
+            System.out.println("1.  Add Student");
+            System.out.println("2.  View All Students");
+            System.out.println("3.  Search Students (by name/course)");
+            System.out.println("4.  Update Student");
+            System.out.println("5.  Delete Student");
+            System.out.println("6.  Search by ID");
+            System.out.println("7.  Sort by Name");
+            System.out.println("8.  Sort by Age");
+            System.out.println("9.  Show Stats");
+            System.out.println("10. Exit");
 
             int choice = Utils.readInt(scanner, "Enter your choice: ");
 
@@ -87,6 +91,44 @@ public class Main {
                     System.out.println(success ? "Student deleted successfully." : "Student not found.");
                 }
                 case 6 -> {
+                    int id = Utils.readInt(scanner, "Enter student ID to search: ");
+                    Optional<Student> found = studentService.findById(id);
+                    if (found.isEmpty()) {
+                        System.out.println("Student not found.");
+                    } else {
+                        System.out.println(found.get());
+                    }
+                }
+                case 7 -> {
+                    List<Student> sorted = studentService.sortByName();
+                    if (sorted.isEmpty()) {
+                        System.out.println("No students found.");
+                    } else {
+                        System.out.println("Students sorted by name (A-Z):");
+                        for (Student student : sorted) {
+                            System.out.println(student);
+                        }
+                    }
+                }
+                case 8 -> {
+                    List<Student> sorted = studentService.sortByAge();
+                    if (sorted.isEmpty()) {
+                        System.out.println("No students found.");
+                    } else {
+                        System.out.println("Students sorted by age (ascending):");
+                        for (Student student : sorted) {
+                            System.out.println(student);
+                        }
+                    }
+                }
+                case 9 -> {
+                    int total = studentService.getTotalCount();
+                    double avgAge = studentService.getAverageAge();
+                    System.out.println("=== Student Statistics ===");
+                    System.out.println("Total students: " + total);
+                    System.out.printf("Average age: %.1f%n", avgAge);
+                }
+                case 10 -> {
                     running = false;
                     System.out.println("Exiting Student Management System.");
                 }

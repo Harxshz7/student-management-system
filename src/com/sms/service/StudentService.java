@@ -1,6 +1,7 @@
 package com.sms.service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,6 +53,34 @@ public class StudentService {
             }
         }
         return matches;
+    }
+
+    public List<Student> sortByName() {
+        List<Student> sorted = new ArrayList<>(studentDAO.findAll());
+        sorted.sort(Comparator.comparing(Student::getName, String.CASE_INSENSITIVE_ORDER));
+        return sorted;
+    }
+
+    public List<Student> sortByAge() {
+        List<Student> sorted = new ArrayList<>(studentDAO.findAll());
+        sorted.sort(Comparator.comparingInt(Student::getAge));
+        return sorted;
+    }
+
+    public int getTotalCount() {
+        return studentDAO.findAll().size();
+    }
+
+    public double getAverageAge() {
+        List<Student> all = studentDAO.findAll();
+        if (all.isEmpty()) {
+            return 0;
+        }
+        int sum = 0;
+        for (Student student : all) {
+            sum += student.getAge();
+        }
+        return (double) sum / all.size();
     }
 
     private void validateStudent(Student student) {
