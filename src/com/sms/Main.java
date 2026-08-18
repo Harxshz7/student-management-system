@@ -1,6 +1,7 @@
 package com.sms;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 import com.sms.model.Student;
@@ -26,12 +27,16 @@ public class Main {
 
             switch (choice) {
                 case 1 -> {
-                    Student student = new Student();
-                    student.setName(Utils.readString(scanner, "Enter student name: "));
-                    student.setAge(Utils.readInt(scanner, "Enter student age: "));
-                    student.setCourse(Utils.readString(scanner, "Enter course: "));
-                    studentService.addStudent(student);
-                    System.out.println("Student added successfully.");
+                    try {
+                        Student student = new Student();
+                        student.setName(Utils.readString(scanner, "Enter student name: "));
+                        student.setAge(Utils.readInt(scanner, "Enter student age: "));
+                        student.setCourse(Utils.readString(scanner, "Enter course: "));
+                        studentService.addStudent(student);
+                        System.out.println("Student added successfully.");
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Error: " + e.getMessage());
+                    }
                 }
                 case 2 -> {
                     List<Student> students = studentService.getAllStudents();
@@ -56,16 +61,20 @@ public class Main {
                 }
                 case 4 -> {
                     int id = Utils.readInt(scanner, "Enter student ID to update: ");
-                    Student existing = studentService.findById(id);
-                    if (existing == null) {
+                    Optional<Student> existing = studentService.findById(id);
+                    if (existing.isEmpty()) {
                         System.out.println("Student not found.");
                     } else {
-                        Student updated = new Student();
-                        updated.setName(Utils.readString(scanner, "Enter new name: "));
-                        updated.setAge(Utils.readInt(scanner, "Enter new age: "));
-                        updated.setCourse(Utils.readString(scanner, "Enter new course: "));
-                        boolean success = studentService.updateStudent(id, updated);
-                        System.out.println(success ? "Student updated successfully." : "Failed to update student.");
+                        try {
+                            Student updated = new Student();
+                            updated.setName(Utils.readString(scanner, "Enter new name: "));
+                            updated.setAge(Utils.readInt(scanner, "Enter new age: "));
+                            updated.setCourse(Utils.readString(scanner, "Enter new course: "));
+                            boolean success = studentService.updateStudent(id, updated);
+                            System.out.println(success ? "Student updated successfully." : "Failed to update student.");
+                        } catch (IllegalArgumentException e) {
+                            System.out.println("Error: " + e.getMessage());
+                        }
                     }
                 }
                 case 5 -> {

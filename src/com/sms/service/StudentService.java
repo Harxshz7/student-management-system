@@ -2,6 +2,7 @@ package com.sms.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.sms.model.Student;
 
@@ -10,6 +11,7 @@ public class StudentService {
     private int nextId = 1;
 
     public void addStudent(Student student) {
+        validateStudent(student);
         student.setId(nextId++);
         students.add(student);
     }
@@ -18,16 +20,17 @@ public class StudentService {
         return students;
     }
 
-    public Student findById(int id) {
+    public Optional<Student> findById(int id) {
         for (Student student : students) {
             if (student.getId() == id) {
-                return student;
+                return Optional.of(student);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     public boolean updateStudent(int id, Student updatedStudent) {
+        validateStudent(updatedStudent);
         for (int i = 0; i < students.size(); i++) {
             Student current = students.get(i);
             if (current.getId() == id) {
@@ -53,5 +56,20 @@ public class StudentService {
             }
         }
         return matches;
+    }
+
+    private void validateStudent(Student student) {
+        if (student.getName() == null || student.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Name must be non-empty");
+        }
+        if (student.getName().length() < 2 || student.getName().length() > 50) {
+            throw new IllegalArgumentException("Name must be between 2 and 50 characters");
+        }
+        if (student.getAge() < 5 || student.getAge() > 100) {
+            throw new IllegalArgumentException("Age must be between 5 and 100");
+        }
+        if (student.getCourse() == null || student.getCourse().trim().isEmpty()) {
+            throw new IllegalArgumentException("Course must be non-empty");
+        }
     }
 }
