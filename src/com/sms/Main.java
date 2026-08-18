@@ -4,15 +4,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
+import com.sms.dao.JsonStudentDAO;
 import com.sms.model.Student;
 import com.sms.service.StudentService;
 import com.sms.util.Utils;
 
 public class Main {
     public static void main(String[] args) {
-        StudentService studentService = new StudentService();
+        JsonStudentDAO studentDAO = new JsonStudentDAO();
+        StudentService studentService = new StudentService(studentDAO);
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
+
+        System.out.println("Loaded " + studentService.getAllStudents().size() + " student(s) from students.json");
 
         while (running) {
             System.out.println("\n=== Student Management System ===");

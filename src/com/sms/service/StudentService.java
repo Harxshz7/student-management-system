@@ -4,52 +4,48 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.sms.dao.StudentDAO;
 import com.sms.model.Student;
 
 public class StudentService {
-    private final List<Student> students = new ArrayList<>();
-    private int nextId = 1;
+    private final StudentDAO studentDAO;
+
+    public StudentService(StudentDAO studentDAO) {
+        this.studentDAO = studentDAO;
+    }
 
     public void addStudent(Student student) {
         validateStudent(student);
-        student.setId(nextId++);
-        students.add(student);
+        studentDAO.save(student);
     }
 
     public List<Student> getAllStudents() {
-        return students;
+        return studentDAO.findAll();
     }
 
     public Optional<Student> findById(int id) {
-        for (Student student : students) {
-            if (student.getId() == id) {
-                return Optional.of(student);
-            }
-        }
-        return Optional.empty();
+        return studentDAO.findById(id);
     }
 
     public boolean updateStudent(int id, Student updatedStudent) {
         validateStudent(updatedStudent);
-        for (int i = 0; i < students.size(); i++) {
-            Student current = students.get(i);
-            if (current.getId() == id) {
-                updatedStudent.setId(id);
-                students.set(i, updatedStudent);
-                return true;
-            }
+        Optional<Student> existing = studentDAO.findById(id);
+        if (existing.isEmpty()) {
+            return false;
         }
-        return false;
+        updatedStudent.setId(id);
+        return studentDAO.update(updatedStudent);
     }
 
     public boolean deleteStudent(int id) {
-        return students.removeIf(student -> student.getId() == id);
+        return studentDAO.delete(id);
     }
 
     public List<Student> searchStudents(String keyword) {
+        List<Student> allStudents = studentDAO.findAll();
         List<Student> matches = new ArrayList<>();
         String search = keyword.toLowerCase();
-        for (Student student : students) {
+        for (Student student : allStudents) {
             if (student.getName().toLowerCase().contains(search)
                     || student.getCourse().toLowerCase().contains(search)) {
                 matches.add(student);
