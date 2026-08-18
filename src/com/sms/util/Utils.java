@@ -1,3 +1,5 @@
+package com.sms.util;
+
 import java.util.Scanner;
 
 public class Utils {

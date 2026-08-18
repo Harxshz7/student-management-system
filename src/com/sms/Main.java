@@ -1,5 +1,11 @@
+package com.sms;
+
 import java.util.List;
 import java.util.Scanner;
+
+import com.sms.model.Student;
+import com.sms.service.StudentService;
+import com.sms.util.Utils;
 
 public class Main {
     public static void main(String[] args) {

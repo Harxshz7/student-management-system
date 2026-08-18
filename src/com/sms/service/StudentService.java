@@ -1,5 +1,9 @@
+package com.sms.service;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import com.sms.model.Student;
 
 public class StudentService {
     private final List<Student> students = new ArrayList<>();
